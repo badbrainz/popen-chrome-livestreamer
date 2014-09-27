@@ -1,0 +1,19 @@
+{
+    "name": "Livestreamer",
+    "version": "1.0",
+    "manifest_version": 2,
+    "description": "Watch video streams through Livestreamer.",
+    "icons": {
+        "16": "icon-16.png",
+        "48": "icon-48.png",
+        "128": "icon-128.png"
+    },
+    "background": {
+        "scripts": [ "background.js" ],
+        "persistent": false
+    },
+    "permissions": [
+        "contextMenus",
+        "nativeMessaging"
+    ]
+}
