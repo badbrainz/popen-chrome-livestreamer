@@ -1,50 +1,33 @@
-var DEBUG = 0;
-var HOST = 'com.cheeky';
-var logLevel = localStorage.loglevel;
+var HOST = 'com.popenchrome';
+var RXURI = /^(([^:/?#]+):)?(\/\/([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/;
 
-function hideAlertWindow(id) {
-    setTimeout(function() {
-        chrome.notifications.clear(id, function() {});
-    }, 5000);
+var logger = function(response) {
+    if (response)
+        console.log(response.message.trim());
+};
+
+function livestreamerCommand(url) {
+    var args = [];
+    args.push(localStorage['path.livestreamer']);
+    args.push(JSON.stringify(url));
+    args.push(localStorage[RXURI.exec(url)[4]] || 'best');
+    return args.join(' ');
 }
 
-function showAlertWindow(title, content) {
-    chrome.notifications.create('', {
-        type: 'basic',
-        title: title,
-        iconUrl: 'icon-48.png',
-        message: content
-    }, hideAlertWindow);
-}
-
-function debugReturnVal(command) {
-    return function(response) {
-        var errno = -1, value = '';
-        if (response) {
-            errno = response.errno;
-            value = response.message;
-        }
-        else if (chrome.runtime.lastError)
-            value = chrome.runtime.lastError.message;
-
-        if (DEBUG) {
-            console.log(value);
-            showAlertWindow('DEBUG: ' + errno, value);
-            return;
-        }
-
-        if (logLevel == 0 || (logLevel == 1 && errno != 0)) {
-            if (errno > 0)
-                showAlertWindow(command.bin + ' error: ' + errno, value);
-            console.log(value);
-        }
-    }
+function sendNativeMessage(url) {
+    var port = chrome.runtime.connectNative(HOST);
+    port.onMessage.addListener(logger);
+    port.postMessage({ cmd: livestreamerCommand(url) });
 }
 
 chrome.contextMenus.create({
     id: 'link',
-    title: 'Send to local media player',
+    title: 'Send to media player',
     contexts: ['link', 'page'],
+    documentUrlPatterns: [
+        '*://www.twitch.tv/*',
+        '*://www.youtube.com/*'
+    ],
     targetUrlPatterns: [
         '*://www.twitch.tv/*',
         '*://www.youtube.com/*'
@@ -52,6 +35,13 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.onClicked.addListener(function(info, tab) {
-    var command = Livestreamer(info.linkUrl || info.pageUrl);
-    chrome.runtime.sendNativeMessage(HOST, command, debugReturnVal(command));
+    sendNativeMessage(info.linkUrl || info.pageUrl);
+});
+
+chrome.runtime.onInstalled.addListener(function(details) {
+    if (details.reason === 'install') {
+        localStorage['path.livestreamer'] = 'livestreamer --loglevel info --player "mpv --cache 5120" --hls-segment-threads 3';
+        localStorage['www.twitch.tv'] = 'medium,low,best,worst';
+        localStorage['www.youtube.com'] = '360p,480p,best,worst,audio_mp4,audio_webm';
+    }
 });

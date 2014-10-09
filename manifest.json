@@ -1,16 +1,17 @@
 {
-    "name": "Cheeky",
+    "name": "Chrome to Native Media Player",
     "version": "1.0",
     "manifest_version": 2,
-    "description": "Play videos and music on your local media player.",
+    "description": "Use a local media player.",
     "icons": {
         "16": "icon-16.png",
         "48": "icon-48.png",
         "128": "icon-128.png"
     },
     "background": {
-        "scripts": [ "messages.js", "background.js" ],
-        "persistent": false
+        "scripts": [
+            "background.js"
+        ]
     },
     "permissions": [
         "contextMenus",
