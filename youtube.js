@@ -1,6 +1,7 @@
 function getQuality() {
-    if (code == 98) return 'best480p,360p,,worst';
-    if (code == 108) return '240p,360p,480p,best,worst';
+    if (window.quality === 'High') return 'best,480p,360p,240p,worst';
+    if (window.quality === 'Medium') return '480p,360p,240p,worst';
+    if (window.quality === 'Low') return 'worst,240p,360p,480p,best';
     return '360p,240p,480p,best,worst';
 }
 
@@ -11,10 +12,3 @@ relayEvent(
     sendToBG,
     true
 );
-
-var code;
-
-document.addEventListener('keyup', function(e) {
-    if (e.altKey && e.ctrlKey)
-        code = e.keyCode;
-});
