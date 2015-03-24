@@ -147,12 +147,28 @@ chrome.runtime.onMessage.addListener(function(request) {
 });
 
 chrome.runtime.onMessageExternal.addListener(function(request, sender, response) {
-    if (request.cmd === 'getStreamURL') {
+    if (request.command === 'GetStreamURL') {
         plugins.getURL(request.url, response);
-        return true;
+        return true;// keep alive
+    }
+    if (request.command === 'PlayStreamURL') {
+        plugins.play(request.url, request.quality);
     }
 });
 
 chrome.omnibox.onInputEntered.addListener(function(input, disposition) {
     plugins.play(input);
+});
+
+chrome.commands.onCommand.addListener(function(command) {
+	switch (command) {
+		case 'High':
+		case 'Medium':
+		case 'Low':
+			chrome.tabs.executeScript({
+				code: 'setQuality("' + command + '")'
+			});
+			break;
+	}
+    onContextMenu({menuItemId: command});
 });

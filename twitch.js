@@ -1,6 +1,7 @@
 function getQuality() {
-    if (code == 98) return 'best,medium,worst';
-    if (code == 108) return 'worstmedium,best';
+    if (window.quality === 'High') return 'best,medium,worst';
+    if (window.quality === 'Medium') return 'medium,worst,best';
+    if (window.quality === 'Low') return 'worst,medium,best';
     return 'medium,best,worst';
 }
 
@@ -11,10 +12,3 @@ relayEvent(
     sendToBG,
     true
 );
-
-var code;
-
-document.addEventListener('keyup', function(e) {
-    if (e.altKey && e.ctrlKey)
-        code = e.keyCode;
-});

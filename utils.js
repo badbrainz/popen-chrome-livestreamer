@@ -25,8 +25,12 @@ function relayEvent(elm, evt, sel, fn, capt) {
         elms[i].addEventListener(evt, callback, !!capt);
 }
 
+function setQuality(lvl) {
+	window.quality = lvl;
+}
+
 function getQuality() {
-    return 'best';
+    return 'best,worst';
 }
 
 function sendToBG(e) {

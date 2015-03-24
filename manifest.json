@@ -33,9 +33,30 @@
     "omnibox":{
         "keyword":"livestreamer"
     },
+    "commands": {
+		"High": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+H"
+			},
+			"description": "High"
+		},
+		"Medium": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+M"
+			},
+			"description": "Medium"
+		},
+        "Low": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+L"
+			},
+			"description": "Low"
+		}
+    },
     "permissions": [
         "contextMenus",
         "notifications",
-        "nativeMessaging"
+        "nativeMessaging",
+        "activeTab"
     ]
 }
